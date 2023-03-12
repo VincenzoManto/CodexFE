@@ -8,6 +8,7 @@ import _ from 'lodash';
 import { LocalDataSource } from 'ng2-smart-table';
 import { DomSanitizer } from '@angular/platform-browser';
 import { NbToastrService } from '@nebular/theme';
+import { environment } from '../../../../environments/environment';
 
 
 @Component({
@@ -61,7 +62,7 @@ export class ChatComponent implements OnInit, OnDestroy {
     for (const value of values) {
       jump.value.push([event.data[value]]);
     }
-    this.http.post(`http://localhost:3000/navigate/${this.db}/${this.session} `, jump).subscribe((e: any) => {
+    this.http.post(`${environment.codexAPI}/navigate/${this.db}/${this.session} `, jump).subscribe((e: any) => {
       if (e.results?.length) {
         this.tablelizeResults(
           e,
@@ -114,12 +115,12 @@ export class ChatComponent implements OnInit, OnDestroy {
 
     this.lastMessage = event.message;
     if (event.message === 'd' ) {
-      this.http.get('http://localhost:3000/data/' + this.session).subscribe((d: any) => {
+      this.http.get(`${environment.codexAPI}/data/${this.session}`).subscribe((d: any) => {
         this.tablelizeResults(d);
       });
     } else {
       const lastIdx = this.messages.length;
-      this.http.post(`http://localhost:3000/execute/${this.db}/${this.session} `, {
+      this.http.post(`${environment.codexAPI}/execute/${this.db}/${this.session} `, {
         message: event.message,
         step: this.steps.findIndex(e => e === this.stepSelected),
       }).subscribe((e: any) => {
@@ -278,7 +279,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.http.get('http://localhost:3000/dbs').subscribe((e: Array<Db>) => {
+    this.http.get(`${environment.codexAPI}/dbs`).subscribe((e: Array<Db>) => {
       this.dbs = e;
       if (this.dbs?.length) {
         this.db = this.dbs[0]?.id;

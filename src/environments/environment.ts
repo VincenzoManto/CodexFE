@@ -10,4 +10,5 @@
 
 export const environment = {
   production: false,
+  codexAPI: 'http://localhost:3000/api',
 };

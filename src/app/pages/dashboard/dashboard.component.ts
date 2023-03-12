@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import { NbThemeService, NbToastrService } from '@nebular/theme';
 import { takeWhile } from 'rxjs/operators' ;
+import { environment } from '../../../environments/environment';
 import { SolarData } from '../../@core/data/solar';
 import { Db } from '../../models/db.model';
 
@@ -120,7 +121,7 @@ export class DashboardComponent implements OnDestroy, OnInit {
     this.letter = letter;
     this.schema = null;
     const schema: any =
-    await this.http.get('http://localhost:3000/schema/' + this.db + '/' + letter).toPromise();
+    await this.http.get(`${environment.codexAPI}/schema/${this.db}/${letter}`).toPromise();
 
     schema.tables.forEach((e: any) => {
       const pks = e.columns?.filter((d: { pk: any; }) => d.pk);
@@ -138,7 +139,7 @@ export class DashboardComponent implements OnDestroy, OnInit {
   }
 
   async train() {
-    await this.http.get('http://localhost:3000/schema-tagging/' + this.db).subscribe(e => {
+    await this.http.get(`${environment.codexAPI}/schema-tagging/${this.db}`).subscribe(e => {
       this.toast.success('Train completed');
     }, (err) => {
       this.toast.danger(err.message);
@@ -146,7 +147,7 @@ export class DashboardComponent implements OnDestroy, OnInit {
   }
 
   ngOnInit() {
-    this.http.get('http://localhost:3000/dbs').subscribe((e: Array<Db>) => {
+    this.http.get(`${environment.codexAPI}/dbs`).subscribe((e: Array<Db>) => {
       this.dbs = e;
       if (this.dbs?.length) {
         this.db = this.dbs[0]?.id;
@@ -201,7 +202,7 @@ export class DashboardComponent implements OnDestroy, OnInit {
       })),
       fks: fks,
     };
-    await this.http.post('http://localhost:3000/schema/' + this.db, tables).subscribe(e => {
+    await this.http.post(`${environment.codexAPI}/schema/${this.db}`, tables).subscribe(e => {
       this.toast.success('Saved');
       this.schema = null;
       this.table = null;
