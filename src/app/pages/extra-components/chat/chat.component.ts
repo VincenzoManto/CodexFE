@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 
 import { ChatService } from './chat.service';
 import * as h337 from 'heatmap.js';
@@ -17,7 +17,7 @@ import { NbToastrService } from '@nebular/theme';
   styleUrls: ['chat.component.scss'],
   providers: [ ChatService ],
 })
-export class ChatComponent implements OnInit {
+export class ChatComponent implements OnInit, OnDestroy {
 
   messages: any[];
   pruningData: any;
@@ -46,6 +46,10 @@ export class ChatComponent implements OnInit {
     private toast: NbToastrService) {
     this.messages = this.chatService.loadMessages();
     this.session = (Date.now()).toString();
+  }
+
+  ngOnDestroy() {
+    this.chatService.saveMessages(this.messages);
   }
 
   navigate(event) {
@@ -198,6 +202,7 @@ export class ChatComponent implements OnInit {
     }
     this.selectedJump = null;
     const source = new LocalDataSource();
+    const summarization = res.summarization;
     source.load(d);
     const jumps = res.jumps || [];
     jumps.forEach(e => {
@@ -212,6 +217,7 @@ export class ChatComponent implements OnInit {
           columns,
           actions: false,
         },
+        summarization,
         source,
         jumps,
       },

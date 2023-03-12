@@ -115,6 +115,8 @@ export class DashboardComponent implements OnDestroy, OnInit {
 
 
   async load(letter) {
+    await this.save();
+    this.table = null;
     this.letter = letter;
     this.schema = null;
     const schema: any =
@@ -167,6 +169,9 @@ export class DashboardComponent implements OnDestroy, OnInit {
   }
 
   async save() {
+    if (!this.schema) {
+      return;
+    }
     if (this.table) {
       const exTable = this.schema.tables.find(e => e.name === this.table?.name);
       exTable.description = this.table.description;
@@ -191,6 +196,8 @@ export class DashboardComponent implements OnDestroy, OnInit {
         db: +this.db,
         id: +e.id || 0,
         description: e.description,
+        columns:
+          this.schema.tables.find(d => d.name === e.name)?.columns.filter(d => d.description?.trim()) || [],
       })),
       fks: fks,
     };

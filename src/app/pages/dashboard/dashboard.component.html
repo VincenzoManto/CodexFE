@@ -100,6 +100,7 @@
             <tr class="p-2" *ngFor="let column of table.columns" [class.font-weight-bold]="column.pk">
               <td>{{column.name}}</td>
               <td>{{column.type}}</td>
+              <td><input type="text" class="form-control" [(ngModel)]="column.description" (ngModelChange)="table.edited = true"></td>
             </tr>
           </tbody>
         </table>

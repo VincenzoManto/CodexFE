@@ -1,5 +1,5 @@
 <div class="row">
-  <div class="col-12">
+  <div class="col-12 p-0">
     <nb-card>
       <nb-card-body>
         <div class="row align-items-center">
@@ -14,95 +14,98 @@
     </nb-card>
   </div>
 </div>
-<nb-card>
-  <nb-card-body>
-    <div class="row justify-content-center">
-      <div class="chat-container col-md-12 col-lg-10">
-        <nb-chat title="NQL" size="large" status="primary" class="m-3" style="width: auto">
-          <div *nbCustomMessage="'chart-a'; let data">
-            <ngx-profit-card></ngx-profit-card>
-          </div>
-          <div *nbCustomMessage="'chart-e'; let data">
-            <ngx-earning-card></ngx-earning-card>
-          </div>
-          <div *nbCustomMessage="'waiting'">
-            <div class="row m-0">
-              <div class="col-auto p-0">
-                <div class="spinner-border spinner-border-sm" role="status">
-                  <span class="sr-only">Loading...</span>
-                </div>
-              </div>
-              <span class="col">
-                I'm searching
-              </span>
-            </div>
-          </div>
-          <div *nbCustomMessage="'table'; noStyles: true; let tableData; let isReply=isReply" class="row align-items-center m-0 mt-2">
-            <ng2-smart-table
-            [settings]="tableData.settings"
-            [source]="tableData.source" class="col-11"
-            (userRowSelect)="navigate($event)"
-            style="max-width: 90%; overflow-x: auto"></ng2-smart-table>
-            <span class="col-1" >
-              <i class="fa fa-fire text-white  p-2 bg-primary"
-              style="cursor: pointer; border-radius: 50%;"
-              (click)="graphHeat()"
-              [nbPopover]="heat"
-              nbPopoverTrigger="click"
-              nbPopoverPlacement="right" ></i>
-            </span>
-            <div class="row col-12 mb-1">
-              <div class="col-auto p-1" *ngFor="let jump of tableData.jumps">
-                <button type="button" class="btn-sm border-0 btn-primary"
-                  [nbTooltip]="jump['to_table_alias']"
-                  [ngClass]="{'btn-primary': selectedJump !== jump, 'btn-success': selectedJump === jump}"
-                  (click)="selectedJump = jump">
-                  {{jump.sentence}} <b>{{jump['to_table']}}</b> <small>  by {{jump['from'].replaceAll('|', ', ')}}</small>
-                </button>
-              </div>
-            </div>
-          </div>
-          <div *nbCustomMessage="'chart'; let data; noStyles: true;">
-            <iframe [srcdoc]="data.chart"></iframe>
-          </div>
-          <nb-chat-message *ngFor="let msg of messages"
-                          [type]="msg.type"
-                          [message]="msg.text"
-                          [reply]="msg.reply"
-                          [sender]="msg.user.name"
-                          [date]="msg.date"
-                          [files]="msg.files"
-                          [customMessageData]="msg.customMessageData"
-                          [quote]="msg.quote"
-                          [latitude]="msg.latitude"
-                          [longitude]="msg.longitude"
-                          [avatar]="msg.user.avatar">
-          </nb-chat-message>
-          <nb-chat-form (send)="sendMessage($event)" [dropFiles]="false">
-          </nb-chat-form>
-        </nb-chat>
-        <div class="row justify-content-center mt-2">
-          <div class="btn-group col-8" role="group">
-            <button type="button" class="btn" *ngFor="let x of steps"
-            [ngClass]="{
-              'btn-primary': x === stepSelected,
-              'btn-light': x !== stepSelected
-            }"
-            (click)="stepSelected = x">{{x}}</button>
+<div class="chat-container row">
+  <nb-chat title="NQL" size="large" status="primary" class="col-12 m-0 p-0" style="width: auto">
+    <div *nbCustomMessage="'chart-a'; let data">
+      <ngx-profit-card></ngx-profit-card>
+    </div>
+    <div *nbCustomMessage="'chart-e'; let data">
+      <ngx-earning-card></ngx-earning-card>
+    </div>
+    <div *nbCustomMessage="'waiting'">
+      <div class="row m-0">
+        <div class="col-auto p-0">
+          <div class="spinner-border spinner-border-sm" role="status">
+            <span class="sr-only">Loading...</span>
           </div>
         </div>
-      </div>
-      <div class="chat-container col-md-12 col-lg-6">
-
+        <span class="col">
+          I'm searching
+        </span>
       </div>
     </div>
-    <!--div class="row mt-3 justify-content-center">
-      <nb-alert status="primary" *ngIf="lastData" class="col-12 col-md-8">
-        <app-pivot [data]="lastData"></app-pivot>
-      </nb-alert>
-    </div-->
-  </nb-card-body>
-</nb-card>
+    <div *nbCustomMessage="'table'; noStyles: true; let tableData; let isReply=isReply" class="row align-items-center m-0 mt-2">
+      <nb-flip-card class="col-11">
+        <nb-card-front>
+          <nb-card>
+            <nb-card-body>
+              <ng2-smart-table
+                [settings]="tableData.settings"
+                [source]="tableData.source"
+                (userRowSelect)="navigate($event)"
+                style="max-width: 90%; overflow-x: auto">
+              </ng2-smart-table>
+            </nb-card-body>
+          </nb-card>
+        </nb-card-front>
+        <nb-card-back>
+          <nb-card style="height: 100%">
+            <nb-card-body>
+              <h3>What behind?</h3>
+              <p>{{tableData.summarization}}</p>
+            </nb-card-body>
+          </nb-card>
+        </nb-card-back>
+      </nb-flip-card>
+      <span class="col-1" >
+        <i class="fa fa-fire text-white  p-2 bg-primary"
+        style="cursor: pointer; border-radius: 50%;"
+        (click)="graphHeat()"
+        [nbPopover]="heat"
+        nbPopoverTrigger="click"
+        nbPopoverPlacement="right" ></i>
+      </span>
+      <div class="row col-12 mb-1">
+        <div class="col-auto p-1" *ngFor="let jump of tableData.jumps">
+          <button type="button" class="btn-sm border-0 btn-primary"
+            [nbTooltip]="jump['to_table_alias']"
+            [ngClass]="{'btn-primary': selectedJump !== jump, 'btn-success': selectedJump === jump}"
+            (click)="selectedJump = jump">
+            {{jump.sentence}} <b>{{jump['to_table']}}</b> <small>  by {{jump['from'].replaceAll('|', ', ')}}</small>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div *nbCustomMessage="'chart'; let data; noStyles: true;">
+      <iframe [srcdoc]="data.chart"></iframe>
+    </div>
+    <nb-chat-message *ngFor="let msg of messages"
+                    [type]="msg.type"
+                    [message]="msg.text"
+                    [reply]="msg.reply"
+                    [sender]="msg.user.name"
+                    [date]="msg.date"
+                    [files]="msg.files"
+                    [customMessageData]="msg.customMessageData"
+                    [quote]="msg.quote"
+                    [latitude]="msg.latitude"
+                    [longitude]="msg.longitude"
+                    [avatar]="msg.user.avatar">
+    </nb-chat-message>
+    <nb-chat-form (send)="sendMessage($event)" [dropFiles]="false">
+    </nb-chat-form>
+  </nb-chat>
+  <div class="row justify-content-center mt-2 col-12">
+    <div class="btn-group col-8" role="group">
+      <button type="button" class="btn" *ngFor="let x of steps"
+      [ngClass]="{
+        'btn-primary': x === stepSelected,
+        'btn-light': x !== stepSelected
+      }"
+      (click)="stepSelected = x">{{x}}</button>
+    </div>
+  </div>
+</div>
 
 <ng-template #heat>
   <div class="chart-features m-3" style="width: 50vw">
