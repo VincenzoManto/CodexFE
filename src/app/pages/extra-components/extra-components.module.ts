@@ -23,11 +23,6 @@ import { ExtraComponentsRoutingModule } from './extra-components-routing.module'
 
 // components
 import { ExtraComponentsComponent } from './extra-components.component';
-import { SpinnerInTabsComponent } from './spinner/spinner-in-tabs/spinner-in-tabs.component';
-import { SpinnerInButtonsComponent } from './spinner/spinner-in-buttons/spinner-in-buttons.component';
-import { SpinnerSizesComponent } from './spinner/spinner-sizes/spinner-sizes.component';
-import { SpinnerColorComponent } from './spinner/spinner-color/spinner-color.component';
-import { SpinnerComponent } from './spinner/spinner.component';
 import {
   InteractiveProgressBarComponent,
 } from './progress-bar/interactive-progress-bar/interactive-progress-bar.component';
@@ -43,7 +38,6 @@ import { CalendarKitMonthCellComponent } from './calendar-kit/month-cell/month-c
 import { ECommerceModule } from '../e-commerce/e-commerce.module';
 import 'heatmap.js';
 import { PivotComponent } from './pivot/pivot.component';
-import { TablesModule } from '../tables/tables.module';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 
 const COMPONENTS = [
@@ -51,11 +45,6 @@ const COMPONENTS = [
   AlertComponent,
   ProgressBarComponent,
   InteractiveProgressBarComponent,
-  SpinnerComponent,
-  SpinnerColorComponent,
-  SpinnerSizesComponent,
-  SpinnerInButtonsComponent,
-  SpinnerInTabsComponent,
   CalendarComponent,
   DayCellComponent,
   ChatComponent,
@@ -82,7 +71,6 @@ const MODULES = [
   NbSpinnerModule,
   NbTabsetModule,
   ECommerceModule,
-  TablesModule,
   Ng2SmartTableModule,
   ThemeModule,
   ExtraComponentsRoutingModule,
