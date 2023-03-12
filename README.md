@@ -18,7 +18,7 @@ To run Codex, you need the following:
 2. Install the dependencies by running the following command: `npm install --force`
 Please note that you need to use the `--force` flag in most cases.
 
-3. Start the application: `npm start` or `ng serve`
+3. Start the application: `npm run start` or `ng serve`
 
 ## Acknowledgements
 
