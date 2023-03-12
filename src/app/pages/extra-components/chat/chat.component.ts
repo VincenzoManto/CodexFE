@@ -7,7 +7,6 @@ import { Db } from '../../../models/db.model';
 import _ from 'lodash';
 import { LocalDataSource } from 'ng2-smart-table';
 import { DomSanitizer } from '@angular/platform-browser';
-import { ToastrComponent } from '../../modal-overlays/toastr/toastr.component';
 import { NbToastrService } from '@nebular/theme';
 
 
@@ -66,7 +65,7 @@ export class ChatComponent implements OnInit, OnDestroy {
       if (e.results?.length) {
         this.tablelizeResults(
           e,
-          `I ${jump.sentence.toLowerCase()} ${jump['to_table_alias']} by ${jump.from.replaceAll('|', ', ')} ${jump.value.replaceAll('|', ', ')}`
+          `I ${jump.sentence.toLowerCase()} ${jump['to_table_alias']} by ${jump.from.replaceAll('|', ', ')} ${jump.value.replaceAll('|', ', ')}`,
         );
       } else {
         this.messages.push({
