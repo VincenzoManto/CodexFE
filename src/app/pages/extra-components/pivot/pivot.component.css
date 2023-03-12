@@ -1,0 +1,146 @@
+.pvtUi { color: #333; }
+
+
+table.pvtTable {
+    font-size: 8pt;
+    text-align: left;
+    border-collapse: collapse;
+}
+::ng-deep table.pvtTable thead tr th, table.pvtTable tbody tr th {
+    background-color: #e6EEEE33;
+    border: 1px solid #CDCDCD;
+    font-size: 8pt;
+    padding: 5px;
+    color: #fff;
+}
+
+table.pvtTable .pvtColLabel {text-align: center;}
+table.pvtTable .pvtTotalLabel {text-align: right;}
+
+::ng-deep table.pvtTable tbody tr td {
+    color: #fff;
+    padding: 5px;
+    background-color: #FFF3;
+    border: 1px solid #CDCDCD;
+    vertical-align: top;
+    text-align: right;
+}
+
+::ng-deep table.pvtTable tbody tr th {
+  color: #fff;
+  padding: 5px;
+  background-color: #FFF5;
+  border: 1px solid #CDCDCD;
+  vertical-align: top;
+  text-align: right;
+}
+
+.pvtTotal, .pvtGrandTotal { font-weight: bold; }
+
+.pvtVals { text-align: center; white-space: nowrap;}
+.pvtRowOrder, .pvtColOrder {
+    cursor:pointer;
+    width: 15px;
+    margin-left: 5px;
+    display: inline-block; }
+::ng-deep .pvtAggregator { margin-bottom: 5px ; width: 125px; }
+
+::ng-deep td select {
+  border: none;
+  border-radius: 5px;
+  background: #fff;
+}
+
+::ng-deep .pvtAxisContainer, .pvtVals {
+    border: 1px solid lightgrey;
+    background: #EEE2 !important;
+    padding: 5px;
+    min-width: 20px;
+    min-height: 20px;
+
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -ms-user-select: none;
+}
+
+::ng-deep td.pvtVals.pvtUiCell {
+  background: #EEE3;
+  border-color: lightgrey;
+}
+
+.pvtAxisContainer li {
+    padding: 8px 6px;
+    list-style-type: none;
+    cursor:move;
+}
+.pvtAxisContainer li.pvtPlaceholder {
+    -webkit-border-radius: 5px;
+    padding: 3px 15px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    border: 1px dashed #aaa;
+}
+
+::ng-deep .pvtAxisContainer li span.pvtAttr {
+    -webkit-text-size-adjust: 100%;
+    background: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 2px 5px;
+    white-space:nowrap;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+}
+
+.pvtTriangle {
+    cursor:pointer;
+    color: grey;
+}
+
+.pvtHorizList li { display: inline; }
+.pvtVertList { vertical-align: top; }
+
+.pvtFilteredAttribute { font-style: italic }
+
+::ng-deep .pvtFilterBox{
+    z-index: 100;
+    width: 300px;
+    border: none;
+    border-radius: 7px;
+    background-color: #fff;
+    position: absolute;
+    text-align: center;
+}
+
+::ng-deep .pvtFilterBox button {
+  border: none;
+  outline: 0;
+  border-radius: 5px;
+  padding: 0.5rem;
+  background: #eef;
+  margin: 1rem;
+}
+.pvtFilterBox h4{ margin: 15px; }
+.pvtFilterBox p { margin: 10px auto; }
+.pvtFilterBox label { font-weight: normal; }
+.pvtFilterBox input[type='checkbox'] { margin-right: 10px; margin-left: 10px; }
+.pvtFilterBox input[type='text'] { width: 230px; }
+.pvtFilterBox .count { color: lightgrey; font-weight: normal; margin-left: 3px;}
+
+.pvtCheckContainer{
+    text-align: left;
+    font-size: 14px;
+    white-space: nowrap;
+    overflow-y: scroll;
+    width: 100%;
+    max-height: 250px;
+    border-top: 1px solid lightgrey;
+    border-bottom: 1px solid lightgrey;
+}
+
+.pvtCheckContainer p{ margin: 5px; }
+
+.pvtRendererArea { padding: 5px;}

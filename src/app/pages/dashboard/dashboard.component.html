@@ -1,0 +1,109 @@
+<!--div class="row">
+  <div class="col-xxxl-3 col-md-6" *ngFor="let statusCard of statusCards">
+    <ngx-status-card [title]="statusCard.title" [type]="statusCard.type">
+      <i [ngClass]="statusCard.iconClass"></i>
+    </ngx-status-card>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xxxl-3 col-xxl-4 col-lg-5 col-md-6">
+    <ngx-temperature></ngx-temperature>
+  </div>
+
+  <div class="col-xxxl-9 col-xxl-8 col-lg-7 col-md-6">
+    <ngx-electricity></ngx-electricity>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xxxl-3 col-xxl-4 col-lg-5 col-md-6">
+    <ngx-solar [chartValue]="solarValue"></ngx-solar>
+
+    <ngx-kitten></ngx-kitten>
+  </div>
+
+  <div class="col-xxxl-3 col-xxl-4 col-md-5">
+    <ngx-traffic></ngx-traffic>
+    <ngx-weather></ngx-weather>
+  </div-->
+<div class="row">
+  <div class="col-12">
+    <nb-card>
+      <nb-card-body>
+        <div class="row">
+          <nb-select class="col-12 col-md-6 col-lg-3" [(selected)]="db">
+            <nb-option value="{{db.id}}" *ngFor="let db of dbs">{{db.name}}</nb-option>
+          </nb-select>
+          <button nbButton hero class="col-12 col-md-6 col-lg-2" (click)="changeDb()" [disabled]="!db" status="{{ schema?.tables?.length ? 'success' : 'basic'}}">
+            {{ schema?.tables?.length ? 'Connected' :'Connect' }}
+          </button>
+          <button nbButton *ngIf="schema" hero class="col-12 col-md-6 col-lg-2 ml-2" (click)="save()">
+            Save
+          </button>
+          <button nbButton *ngIf="schema && saved" hero class="col-12 col-md-6 col-lg-2 ml-2" (click)="train()">
+            Train
+          </button>
+        </div>
+      </nb-card-body>
+    </nb-card>
+  </div>
+</div>
+<nb-card>
+  <nb-card-body>
+    <div class="container-fluid">
+      <div class="row flex-row flex-nowrap">
+        <div class="col-auto">
+          <button class="btn" [class.btn-primary]="letter === l" *ngFor="let l of letters" (click)="load(l)">
+            {{ l }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </nb-card-body>
+</nb-card>
+<div class="row">
+  <div class="col-8">
+    <app-db *ngIf="schema" (tableSelected)="tableSelected($event)" [schema]="schema"></app-db>
+    <h1 class="text-center text-dark" *ngIf="!schema">
+      <i class="fa fa-search"></i> <br>
+      Select a schema and a letter
+    </h1>
+  </div>
+  <div class="col-4">
+    <nb-card>
+      <nb-card-header>
+        Table schema
+      </nb-card-header>
+      <nb-card-body>
+        <h5>{{ table?.name || 'No table selected'}}</h5>
+        <div class="row mb-2" *ngIf="table">
+          <div class="col-12">
+            <input
+              type="text"
+              nbInput
+              fullWidth
+              shape="semi-round"
+              placeholder="Describe it in 3 or 4 words"
+              [(ngModel)]="table.description"
+              class="input-full-width size-medium status-basic shape-rectangle nb-transition">
+          </div>
+        </div>
+        <table class="w-100" *ngIf="table">
+          <thead class="bg-light">
+            <tr class="p-2">
+              <th>Name</th>
+              <th>Type</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="p-2" *ngFor="let column of table.columns" [class.font-weight-bold]="column.pk">
+              <td>{{column.name}}</td>
+              <td>{{column.type}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </nb-card-body>
+    </nb-card>
+  </div>
+</div>

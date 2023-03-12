@@ -1,0 +1,146 @@
+{
+  "definitions": {},
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": [
+    "tables"
+  ],
+  "properties": {
+    "arrangement": {
+      "type": "string",
+      "enum": [
+        "spiral"
+      ],
+      "description": "Arrangement of the tables. Note if this value is set, the \"table.pos\" values will be ignored."
+    },
+    "viewport": {
+      "type": "string",
+      "enum": [
+        "noChange",
+        "centerByTablesWeight",
+        "center",
+        "centerByTables"
+      ],
+      "description": "Viewport positioning strategy on initial load.",
+      "default": "centerByTables"
+    },
+    "viewHeight": {
+      "type": "integer",
+      "default": 5000
+    },
+    "viewWidth": {
+      "type": "integer",
+      "default": 5000
+    },
+    "tables": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "columns"
+        ],
+        "properties": {
+          "name": {
+            "$id": "#/properties/tables/items/properties/name",
+            "type": "string",
+            "default": "",
+            "examples": [
+              "school"
+            ],
+            "pattern": "^(.*)$"
+          },
+          "pos": {
+            "description": "Defines position of table.",
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "center-viewport"
+                ],
+                "description": "If it's set to viewport-center it will be centered on viewport."
+              },
+              {
+                "type": "object",
+                "required": [
+                  "x",
+                  "y"
+                ],
+                "properties": {
+                  "x": {
+                    "type": "number",
+                    "minimum": 0,
+                    "default": 0
+                  },
+                  "y": {
+                    "type": "number",
+                    "minimum": 0,
+                    "default": 0
+                  }
+                }
+              }
+            ]
+          },
+          "columns": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "name"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "examples": [
+                    "id"
+                  ],
+                  "pattern": "^(.*)$"
+                },
+                "pk": {
+                  "type": "boolean",
+                  "default": false,
+                  "examples": [
+                    true
+                  ],
+                  "description": "pk stands for primary key"
+                },
+                "nn": {
+                  "type": "boolean",
+                  "default": false,
+                  "description": "nn stands for not null"
+                },
+                "uq": {
+                  "type": "boolean",
+                  "default": false,
+                  "description": "uq stands for unique"
+                },
+                "fk": {
+                  "type": "object",
+                  "required": [
+                    "table",
+                    "column"
+                  ],
+                  "properties": {
+                    "table": {
+                      "type": "string"
+                    },
+                    "column": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "type": {
+                  "type": "string",
+                  "examples": [
+                    "int"
+                  ],
+                  "pattern": "^(.*)$"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
