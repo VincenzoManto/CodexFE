@@ -20,7 +20,7 @@ import {
 
 import { ThemeModule } from '../../@theme/theme.module';
 import { ExtraComponentsRoutingModule } from './extra-components-routing.module';
-
+import { AngularD3CloudModule } from 'angular-d3-cloud'
 // components
 import { ExtraComponentsComponent } from './extra-components.component';
 import {
@@ -73,6 +73,7 @@ const MODULES = [
   ECommerceModule,
   Ng2SmartTableModule,
   ThemeModule,
+  AngularD3CloudModule,
   ExtraComponentsRoutingModule,
 ];
 

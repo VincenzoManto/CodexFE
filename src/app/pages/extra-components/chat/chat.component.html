@@ -2,26 +2,25 @@
   <div class="col-12 p-0">
     <nb-card>
       <nb-card-body>
-        <div class="row align-items-center">
+        <div class="row align-items-center justify-content-between">
           <nb-select class="col-12 col-md-6 col-lg-3" [(selected)]="db">
-            <nb-option value="{{db.id}}" *ngFor="let db of dbs">{{db.name}}</nb-option>
+            <nb-option value="{{db.id}}" *ngFor="let db of dbs; let idx = index" [selected]="idx === 0">{{db.name}}</nb-option>
           </nb-select>
-          <button nbButton hero class="col-12 col-md-6 col-lg-2" [status]="'success'">
-            Connected
-          </button>
+          <div class="btn-group col-5" role="group">
+            <button type="button" class="btn" *ngFor="let x of steps"
+            [ngClass]="{
+              'btn-primary': x === stepSelected,
+              'btn-light': x !== stepSelected
+            }"
+            (click)="stepSelected = x">{{x}}</button>
+          </div>
         </div>
       </nb-card-body>
     </nb-card>
   </div>
 </div>
 <div class="chat-container row">
-  <nb-chat title="NQL" size="large" status="primary" class="col-12 m-0 p-0" style="width: auto">
-    <div *nbCustomMessage="'chart-a'; let data">
-      <ngx-profit-card></ngx-profit-card>
-    </div>
-    <div *nbCustomMessage="'chart-e'; let data">
-      <ngx-earning-card></ngx-earning-card>
-    </div>
+  <nb-chat title="NQL" size="large" status="primary" class="col-12 m-0 p-0" style="width: auto; height: 75vh">
     <div *nbCustomMessage="'waiting'">
       <div class="row m-0">
         <div class="col-auto p-0">
@@ -34,11 +33,21 @@
         </span>
       </div>
     </div>
+    <div *nbCustomMessage="'error'" dataTt>
+      <div class="row m-0">
+        <div class="col-auto p-0">
+          <i class="fa fa-times"></i>
+        </div>
+        <span class="col">
+          Error
+        </span>
+      </div>
+    </div>
     <div *nbCustomMessage="'table'; noStyles: true; let tableData; let isReply=isReply" class="row align-items-center m-0 mt-2">
       <nb-flip-card class="col-11">
         <nb-card-front>
           <nb-card>
-            <nb-card-body>
+            <nb-card-body class="p-0">
               <ng2-smart-table
                 [settings]="tableData.settings"
                 [source]="tableData.source"
@@ -52,12 +61,12 @@
           <nb-card style="height: 100%">
             <nb-card-body>
               <h3>What behind?</h3>
-              <p>{{tableData.summarization}}</p>
+              <pre>{{tableData.summarization}}</pre>
             </nb-card-body>
           </nb-card>
         </nb-card-back>
       </nb-flip-card>
-      <span class="col-1" >
+      <span class="col-1" *ngIf="tableData.id === lastTableId">
         <i class="fa fa-fire text-white  p-2 bg-primary"
         style="cursor: pointer; border-radius: 50%;"
         (click)="graphHeat()"
@@ -77,7 +86,11 @@
       </div>
     </div>
     <div *nbCustomMessage="'chart'; let data; noStyles: true;">
-      <iframe [srcdoc]="data.chart"></iframe>
+      <nb-card class="chart mt-2">
+        <nb-card-body class="p-0">
+          <iframe [srcdoc]="data.chart"></iframe>
+        </nb-card-body>
+      </nb-card>
     </div>
     <nb-chat-message *ngFor="let msg of messages"
                     [type]="msg.type"
@@ -95,30 +108,30 @@
     <nb-chat-form (send)="sendMessage($event)" [dropFiles]="false">
     </nb-chat-form>
   </nb-chat>
-  <div class="row justify-content-center mt-2 col-12">
-    <div class="btn-group col-8" role="group">
-      <button type="button" class="btn" *ngFor="let x of steps"
-      [ngClass]="{
-        'btn-primary': x === stepSelected,
-        'btn-light': x !== stepSelected
-      }"
-      (click)="stepSelected = x">{{x}}</button>
-    </div>
-  </div>
+
 </div>
 
 <ng-template #heat>
-  <div class="chart-features m-3" style="width: 50vw">
+  <div class="chart-features m-3" style="width: 60vw">
     <nb-alert status="primary">{{ lastMessage }}</nb-alert>
     <div class="row">
-      <div class="col-12" >
+      <div class="col-6" >
         <div id="heatmapContainer" style="height: 500px" (mousemove)="draw($event)">
           <div class="overlay"></div>
         </div>
       </div>
-
+      <angular-d3-cloud
+        class="col-6"
+        [data]="pruningDataWords"
+        [width]="600"
+        [height]="600"
+        [autoFill]="true"
+        [rotate]="wordCloudRotation"
+        [font]="'sans-serif'"
+        [animation]="true"
+      ></angular-d3-cloud>
     </div>
-    <div class="row justify-content-between">
+    <!--div class="row justify-content-between">
       <button nbButton hero class="col-12 col-md-6 col-lg-2"  [class.text-primary]="drawing"  (click)="drawing = !drawing">
         <i class="fa fa-pen" ></i>
         Alter
@@ -127,6 +140,6 @@
         <i class="fa fa-send"></i>
         Resend
       </button>
-    </div>
+    </div-->
   </div>
 </ng-template>

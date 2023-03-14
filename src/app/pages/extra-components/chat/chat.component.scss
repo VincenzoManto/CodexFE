@@ -69,9 +69,33 @@
   overflow-x: auto;
 }
 
+::ng-deep .nb-custom-message-not-reply {
+  background: #db2c66 !important;
+  color: white;
+}
+
+::ng-deep .front-container, ::ng-deep .back-container {
+  max-width: 70vw;
+  overflow-x: auto;
+}
+
+::ng-deep .front-container nb-card {
+  width: fit-content !important;
+}
+
+
+::ng-deep .back-container nb-card {
+  margin: 0;
+}
+
+nb-card.chart, .chart nb-card-body {
+  width: fit-content;
+  height: auto;
+}
+
 iframe {
-  border:none;
-  width: 400px;
+  border: none;
+  width: 450px;
   height: 400px;
 }
 
@@ -95,4 +119,12 @@ small {
 
 ::-webkit-scrollbar-thumb:hover {
   opacity: 0.6
+}
+
+::ng-deep nb-chat {
+  height: 75vh;
+}
+
+::ng-deep nb-chat .header {
+  display: none;
 }

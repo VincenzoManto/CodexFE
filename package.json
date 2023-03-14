@@ -46,6 +46,7 @@
     "@nebular/security": "8.0.0",
     "@nebular/theme": "8.0.0",
     "@swimlane/ngx-charts": "^14.0.0",
+    "angular-d3-cloud": "^1.1.2",
     "angular2-chartjs": "0.4.1",
     "bootstrap": "4.3.1",
     "chart.js": "2.7.1",

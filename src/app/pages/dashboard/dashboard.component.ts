@@ -139,7 +139,7 @@ export class DashboardComponent implements OnDestroy, OnInit {
   }
 
   async train() {
-    await this.http.get(`${environment.codexAPI}/schema-tagging/${this.db}`).subscribe(e => {
+    await this.http.get(`${environment.codexAPI}/tagging/${this.db}`).subscribe(e => {
       this.toast.success('Train completed');
     }, (err) => {
       this.toast.danger(err.message);

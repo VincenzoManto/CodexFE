@@ -36,15 +36,31 @@ export class ChatComponent implements OnInit, OnDestroy {
     'Query',
     'Results',
   ];
-  stepSelected = 'Pruning';
+  stepSelected = 'Results';
   selectedJump: any;
+  pruningDataWords = [];
+  lastTableId = 0;
+  wordCloudRotation = () => {
+    return 0; // [90, 0, -90][Math.round(3 * Math.random())];
+  }
 
   constructor(
     protected chatService: ChatService,
     private http: HttpClient,
     private sanitizer: DomSanitizer,
     private toast: NbToastrService) {
-    this.messages = this.chatService.loadMessages();
+    const messages = this.chatService.loadMessages();
+    messages.forEach(e => {
+      if (e.customMessageData?.chart?.changingThisBreaksApplicationSecurity) {
+        e.customMessageData.chart = e.customMessageData?.chart?.changingThisBreaksApplicationSecurity;
+      }
+      if (e.customMessageData?.source?.data) {
+        const source = new LocalDataSource();
+        source.load(e.customMessageData?.source?.data);
+        e.customMessageData.source = source;
+      }
+    });
+    this.messages = messages;
     this.session = (Date.now()).toString();
   }
 
@@ -66,7 +82,7 @@ export class ChatComponent implements OnInit, OnDestroy {
       if (e.results?.length) {
         this.tablelizeResults(
           e,
-          `I ${jump.sentence.toLowerCase()} ${jump['to_table_alias']} by ${jump.from.replaceAll('|', ', ')} ${jump.value.replaceAll('|', ', ')}`,
+          `I ${jump.sentence.toLowerCase()} ${jump['to_table_alias']} by ${jump.from.replaceAll('|', ', ')} ${jump.value.join(', ')}`,
         );
       } else {
         this.messages.push({
@@ -138,7 +154,8 @@ export class ChatComponent implements OnInit, OnDestroy {
             },
           };
           this.messages.push(table);
-        } else {
+        }
+        if (e.pruning) {
           this.pruningData = [];
           const pruning = e.pruning;
           let i = 1;
@@ -160,11 +177,15 @@ export class ChatComponent implements OnInit, OnDestroy {
           this.pruningData.forEach(d => {
             d.value /= this.max;
           });
+          this.pruningDataWords = this.pruningData.map(word => ({
+            text: word.name,
+            value: Math.round(Math.pow(word.value * 10, 1.5))
+          }));
           if (e.results?.length) {
             this.tablelizeResults(e);
           } else {
             this.messages.push({
-              text: 'Nothing here',
+              text: 'Nothing here. I apologize, but I found nothing...',
               date: new Date(),
               reply: false,
               type:  'text',
@@ -177,7 +198,7 @@ export class ChatComponent implements OnInit, OnDestroy {
         this.messages.splice(lastIdx, 1);
       }, (error) => {
         this.toast.danger(error);
-        this.messages[lastIdx].text = error;
+        this.messages[lastIdx].type = 'error';
       });
       this.messages.push({
         text: '',
@@ -220,6 +241,7 @@ export class ChatComponent implements OnInit, OnDestroy {
         summarization,
         source,
         jumps,
+        id: ++this.lastTableId
       },
       type: 'table',
       user: {
@@ -281,9 +303,12 @@ export class ChatComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.http.get(`${environment.codexAPI}/dbs`).subscribe((e: Array<Db>) => {
       this.dbs = e;
-      if (this.dbs?.length) {
-        this.db = this.dbs[0]?.id;
-      }
+      const self = this;
+      setTimeout(() => {
+        if (e?.length) {
+          self.db = e[0]?.id;
+        }
+      }, 500);
     });
   }
 
