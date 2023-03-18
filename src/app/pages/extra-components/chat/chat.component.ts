@@ -181,19 +181,19 @@ export class ChatComponent implements OnInit, OnDestroy {
             text: word.name,
             value: Math.round(Math.pow(word.value * 10, 1.5))
           }));
-          if (e.results?.length) {
-            this.tablelizeResults(e);
-          } else {
-            this.messages.push({
-              text: 'Nothing here. I apologize, but I found nothing...',
-              date: new Date(),
-              reply: false,
-              type:  'text',
-              user: {
-                name: 'Bot',
-              },
-            });
-          }
+        }
+        if (e.results?.length) {
+          this.tablelizeResults(e);
+        } else if (!e.chart) {
+          this.messages.push({
+            text: 'Nothing here. I apologize, but I found nothing...',
+            date: new Date(),
+            reply: false,
+            type:  'text',
+            user: {
+              name: 'Bot',
+            },
+          });
         }
         this.messages.splice(lastIdx, 1);
       }, (error) => {
@@ -213,6 +213,9 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   tablelizeResults(res, preMessage = 'Here something') {
+    if (res.pretext) {
+      preMessage = res.pretext;
+    }
     const d = res.results;
     const columns = {};
     for (const e of Object.keys(d[0])) {

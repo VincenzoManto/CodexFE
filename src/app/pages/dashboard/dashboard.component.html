@@ -53,11 +53,14 @@
   <nb-card-body>
     <div class="container-fluid">
       <div class="row flex-row flex-nowrap">
-        <div class="col-auto">
+        <div class="col-auto" *ngIf="!completeDB">
           <button class="btn" [class.btn-primary]="letter === l" *ngFor="let l of letters" (click)="load(l)">
             {{ l }}
           </button>
         </div>
+        <button nbButton hero class="col-auto" (click)="changeView()" [disabled]="!db" status="{{ completeDB ? 'success' : 'basic'}}">
+          Entire DB
+        </button>
       </div>
     </div>
   </nb-card-body>
@@ -77,6 +80,16 @@
       </nb-card-header>
       <nb-card-body>
         <h5>{{ table?.name || 'No table selected'}}</h5>
+        <input
+          *ngIf="table"
+          type="text"
+          nbInput
+          fullWidth
+          shape="semi-round"
+          placeholder="Public name"
+          [(ngModel)]="table.fullname"
+          (ngModelChange)="table.edited = true"
+          class="input-full-width size-medium status-basic shape-rectangle nb-transition mb-1">
         <div class="row mb-2" *ngIf="table">
           <div class="col-12">
             <input
@@ -86,22 +99,31 @@
               shape="semi-round"
               placeholder="Describe it in 3 or 4 words"
               [(ngModel)]="table.description"
+              (ngModelChange)="table.edited = true"
               class="input-full-width size-medium status-basic shape-rectangle nb-transition">
           </div>
+        </div>
+        <div class="row m-2 justify-content-end">
+          <button nbButton hero class="col-auto" (click)="showAll = !showAll" [disabled]="!db" status="{{ showAll ? 'success' : 'basic'}}">
+            Show all
+          </button>
         </div>
         <table class="w-100" *ngIf="table">
           <thead class="bg-light">
             <tr class="p-2">
               <th>Name</th>
               <th>Type</th>
+              <th>Description</th>
             </tr>
           </thead>
           <tbody>
-            <tr class="p-2" *ngFor="let column of table.columns" [class.font-weight-bold]="column.pk">
-              <td>{{column.name}}</td>
-              <td>{{column.type}}</td>
-              <td><input type="text" class="form-control" [(ngModel)]="column.description" (ngModelChange)="table.edited = true"></td>
-            </tr>
+            <ng-container *ngFor="let column of table.columns">
+              <tr class="p-2" *ngIf="showAllTruely || column.description" [class.font-weight-bold]="column.pk">
+                <td>{{column.name}}</td>
+                <td>{{column.type}}</td>
+                <td><input type="text" class="form-control" [(ngModel)]="column.description" (ngModelChange)="table.edited = true"></td>
+              </tr>
+            </ng-container>
           </tbody>
         </table>
       </nb-card-body>

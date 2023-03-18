@@ -38,6 +38,7 @@ export default class Table {
   private columns: Column[];
   private nameValue: string;
   private description: string;
+  private fullname: string;
   private posValue: Point | string;
   private disableMovementValue: boolean;
   private gElem!: SVGGraphicsElement;
@@ -58,7 +59,8 @@ export default class Table {
         y: 0,
       },
       type,
-      description
+      description,
+      fullname
     }: TableSchema,
     arrangement?: TableArrang
   ) {
@@ -66,6 +68,7 @@ export default class Table {
     this.nameValue = name;
     this.posValue = pos;
     this.description = description;
+    this.fullname = fullname;
     this.type = type || '';
 
     this.disableMovementValue = false;
@@ -211,6 +214,7 @@ export default class Table {
       height: this.tableElem.offsetHeight,
       name: this.nameValue,
       description: this.description,
+      fullname: this.fullname,
       pos: this.posValue as Point,
       width: this.tableElem.offsetWidth,
     };

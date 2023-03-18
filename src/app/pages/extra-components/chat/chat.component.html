@@ -43,7 +43,7 @@
         </span>
       </div>
     </div>
-    <div *nbCustomMessage="'table'; noStyles: true; let tableData; let isReply=isReply" class="row align-items-center m-0 mt-2">
+    <div *nbCustomMessage="'table'; noStyles: true; let tableData; let isReply=isReply" class="row align-items-center m-0 mt-2" [class.selectedJump]="tableData.jumps.includes(selectedJump)">
       <nb-flip-card class="col-11">
         <nb-card-front>
           <nb-card>

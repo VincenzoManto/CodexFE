@@ -83,6 +83,12 @@
   width: fit-content !important;
 }
 
+::ng-deep .selectedJump tbody tr {
+  cursor: pointer !important;
+  border: 2px dashed #00d68f;
+  cursor: pointer;
+}
+
 
 ::ng-deep .back-container nb-card {
   margin: 0;

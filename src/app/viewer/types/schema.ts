@@ -26,6 +26,7 @@ export interface TableSchema {
   columns: ColumnSchema[];
   type?: string;
   description?: string;
+  fullname?: string;
 }
 
 export interface Schema {

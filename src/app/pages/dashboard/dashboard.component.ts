@@ -23,71 +23,13 @@ export class DashboardComponent implements OnDestroy, OnInit {
   db: number;
   dbs: Array<Db> = [];
 
-  solarValue: number;
-  lightCard: CardSettings = {
-    title: 'Light',
-    iconClass: 'nb-lightbulb',
-    type: 'primary',
-  };
-  rollerShadesCard: CardSettings = {
-    title: 'Roller Shades',
-    iconClass: 'nb-roller-shades',
-    type: 'success',
-  };
-  wirelessAudioCard: CardSettings = {
-    title: 'Wireless Audio',
-    iconClass: 'nb-audio',
-    type: 'info',
-  };
-  coffeeMakerCard: CardSettings = {
-    title: 'Coffee Maker',
-    iconClass: 'nb-coffee-maker',
-    type: 'warning',
-  };
-
-  statusCards: string;
-
-  commonStatusCardsSet: CardSettings[] = [
-    this.lightCard,
-    this.rollerShadesCard,
-    this.wirelessAudioCard,
-    this.coffeeMakerCard,
-  ];
-
-  statusCardsByThemes: {
-    default: CardSettings[];
-    cosmic: CardSettings[];
-    corporate: CardSettings[];
-    dark: CardSettings[];
-  } = {
-    default: this.commonStatusCardsSet,
-    cosmic: this.commonStatusCardsSet,
-    corporate: [
-      {
-        ...this.lightCard,
-        type: 'warning',
-      },
-      {
-        ...this.rollerShadesCard,
-        type: 'primary',
-      },
-      {
-        ...this.wirelessAudioCard,
-        type: 'danger',
-      },
-      {
-        ...this.coffeeMakerCard,
-        type: 'info',
-      },
-    ],
-    dark: this.commonStatusCardsSet,
-  };
-
+  showAll = false;
   table: any;
   schema: any;
   saved = false;
   letters: Array<string> = [];
   letter = 'A';
+  completeDB = false;
 
   constructor(private themeService: NbThemeService,
               private http: HttpClient,
@@ -95,17 +37,17 @@ export class DashboardComponent implements OnDestroy, OnInit {
               private solarService: SolarData) {
 
     this.letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
-    this.themeService.getJsTheme()
-      .pipe(takeWhile(() => this.alive))
-      .subscribe(theme => {
-        this.statusCards = this.statusCardsByThemes[theme.name];
-    });
+  }
 
-    this.solarService.getSolarData()
-      .pipe(takeWhile(() => this.alive))
-      .subscribe((data) => {
-        this.solarValue = data;
-      });
+  get showAllTruely() {
+    return this.showAll || !this.table.columns?.filter(e => e.description?.trim())?.length;
+  }
+
+  changeView() {
+    this.completeDB = !this.completeDB;
+    if (this.completeDB) {
+      this.load('');
+    }
   }
 
   async changeDb() {
@@ -159,6 +101,7 @@ export class DashboardComponent implements OnDestroy, OnInit {
     if (this.table) {
       const exTable = this.schema.tables.find(e => e.name === this.table?.name);
       exTable.description = this.table.description;
+      exTable.fullname = this.table.fullname;
       exTable.edited = true;
     }
     this.table = table;
@@ -176,6 +119,7 @@ export class DashboardComponent implements OnDestroy, OnInit {
     if (this.table) {
       const exTable = this.schema.tables.find(e => e.name === this.table?.name);
       exTable.description = this.table.description;
+      exTable.fullname = this.table.fullname;
       exTable.edited = true;
     }
     const fks = [];
@@ -196,6 +140,7 @@ export class DashboardComponent implements OnDestroy, OnInit {
         name: e.name,
         db: +this.db,
         id: +e.id || 0,
+        fullname: e.fullname || e.name,
         description: e.description,
         columns:
           this.schema.tables.find(d => d.name === e.name)?.columns.filter(d => d.description?.trim()) || [],
