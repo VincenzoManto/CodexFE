@@ -5,6 +5,7 @@ type TableData = {
   width: number;
   height: number;
   description: string;
+  fullname: string;
 };
 
 export default TableData;
