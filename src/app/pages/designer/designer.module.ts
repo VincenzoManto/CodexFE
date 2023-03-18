@@ -13,7 +13,7 @@ import {
 import { NgxEchartsModule } from 'ngx-echarts';
 
 import { ThemeModule } from '../../@theme/theme.module';
-import { DashboardComponent } from './dashboard.component';
+import { DesignerComponent } from './designer.component';
 import { FormsModule } from '@angular/forms';
 import { DBComponent } from '../db/db.component';
 
@@ -34,8 +34,8 @@ import { DBComponent } from '../db/db.component';
     NgxEchartsModule,
   ],
   declarations: [
-    DashboardComponent,
+    DesignerComponent,
     DBComponent
   ],
 })
-export class DashboardModule { }
+export class DesignerModule { }

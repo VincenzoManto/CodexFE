@@ -13,11 +13,11 @@ interface CardSettings {
 }
 
 @Component({
-  selector: 'ngx-dashboard',
-  styleUrls: ['./dashboard.component.scss'],
-  templateUrl: './dashboard.component.html',
+  selector: 'app-designer',
+  styleUrls: ['./designer.component.scss'],
+  templateUrl: './designer.component.html',
 })
-export class DashboardComponent implements OnDestroy, OnInit {
+export class DesignerComponent implements OnDestroy, OnInit {
 
   private alive = true;
   db: number;
