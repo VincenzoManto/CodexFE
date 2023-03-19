@@ -1,0 +1,37 @@
+<div class="row">
+  <div class="col-12 p-0">
+    <nb-card>
+      <nb-card-body>
+        <div class="row align-items-center justify-content-between">
+          <nb-select class="col-12 col-md-6 col-lg-3" [(selected)]="db">
+            <nb-option value="{{db.id}}" *ngFor="let db of dbs; let idx = index" [selected]="idx === 0">{{db.name}}</nb-option>
+          </nb-select>
+        </div>
+      </nb-card-body>
+    </nb-card>
+  </div>
+</div>
+<div class="row" *ngIf="db">
+  <input
+    type="text"
+    nbInput
+    fullWidth
+    shape="semi-round"
+    placeholder="Edit this dashboard"
+    [(ngModel)]="prompt"
+    (keyup.enter)="submit()"
+    class="input-full-width size-medium status-basic shape-rectangle nb-transition mb-1">
+</div>
+<div class="row" *ngIf="error">
+  <nb-alert class="col-12 text-center" [status]="'danger'">{{error}}</nb-alert>
+</div>
+
+<div class="row">
+  <div class="col-{{col.class}}" *ngFor="let col of structure" (click)="select(col)">
+    <nb-card [class.selected]="col.selected">
+      <nb-card-body>
+        <app-chat [embeded]="true" [reloadHistory]="false" [db]="db" [lastPrompt]="col.prompt" [selected]="col.selected"></app-chat>
+      </nb-card-body>
+    </nb-card>
+  </div>
+</div>

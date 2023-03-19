@@ -27,7 +27,6 @@ import {
   InteractiveProgressBarComponent,
 } from './progress-bar/interactive-progress-bar/interactive-progress-bar.component';
 import { ProgressBarComponent } from './progress-bar/progress-bar.component';
-import { AlertComponent } from './alert/alert.component';
 import { ChatComponent } from './chat/chat.component';
 import { CalendarComponent } from './calendar/calendar.component';
 import { DayCellComponent } from './calendar/day-cell/day-cell.component';
@@ -39,10 +38,12 @@ import { ECommerceModule } from '../e-commerce/e-commerce.module';
 import 'heatmap.js';
 import { PivotComponent } from './pivot/pivot.component';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
+import { FormsModule } from '@angular/forms';
+import { DashboardComponent } from './dashboard/dashboard.component';
 
 const COMPONENTS = [
   ExtraComponentsComponent,
-  AlertComponent,
+  DashboardComponent,
   ProgressBarComponent,
   InteractiveProgressBarComponent,
   CalendarComponent,
@@ -57,6 +58,7 @@ const COMPONENTS = [
 
 const MODULES = [
   NbAlertModule,
+  FormsModule,
   NbActionsModule,
   NbButtonModule,
   NbCalendarModule,

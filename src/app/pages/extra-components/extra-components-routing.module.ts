@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 import { ExtraComponentsComponent } from './extra-components.component';
-import { AlertComponent } from './alert/alert.component';
+import { AlertComponent } from './dashboard/dashboard.component';
 import { ProgressBarComponent } from './progress-bar/progress-bar.component';
 import { CalendarComponent } from './calendar/calendar.component';
 import { ChatComponent } from './chat/chat.component';

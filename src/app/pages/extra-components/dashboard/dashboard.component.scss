@@ -1,0 +1,24 @@
+@keyframes animate-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.5, 0.5);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1, 1);
+  }
+}
+
+nb-card {
+  animation-name: animate-pop;
+  animation-timing-function: cubic-bezier(.26,.53,.74,1.48);
+  transition: transform 0.5s;
+}
+
+.selected {
+  border: 1px solid slategray !important;
+  transform: scale(1.05);
+  z-index: 5000;
+  position: relative;
+}
