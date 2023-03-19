@@ -2,31 +2,16 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 import { ExtraComponentsComponent } from './extra-components.component';
-import { AlertComponent } from './dashboard/dashboard.component';
-import { ProgressBarComponent } from './progress-bar/progress-bar.component';
-import { CalendarComponent } from './calendar/calendar.component';
 import { ChatComponent } from './chat/chat.component';
-import { CalendarKitFullCalendarShowcaseComponent } from './calendar-kit/calendar-kit.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
 
 const routes: Routes = [{
   path: '',
   component: ExtraComponentsComponent,
   children: [
     {
-      path: 'calendar',
-      component: CalendarComponent,
-    },
-    {
-      path: 'progress-bar',
-      component: ProgressBarComponent,
-    },
-    {
-      path: 'alert',
-      component: AlertComponent,
-    },
-    {
-      path: 'calendar-kit',
-      component: CalendarKitFullCalendarShowcaseComponent,
+      path: 'dashboard',
+      component: DashboardComponent,
     },
     {
       path: 'chat',

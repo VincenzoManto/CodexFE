@@ -23,17 +23,7 @@ import { ExtraComponentsRoutingModule } from './extra-components-routing.module'
 import { AngularD3CloudModule } from 'angular-d3-cloud'
 // components
 import { ExtraComponentsComponent } from './extra-components.component';
-import {
-  InteractiveProgressBarComponent,
-} from './progress-bar/interactive-progress-bar/interactive-progress-bar.component';
-import { ProgressBarComponent } from './progress-bar/progress-bar.component';
 import { ChatComponent } from './chat/chat.component';
-import { CalendarComponent } from './calendar/calendar.component';
-import { DayCellComponent } from './calendar/day-cell/day-cell.component';
-import { NebularFormInputsComponent } from './form-inputs/nebular-form-inputs.component';
-import { NebularSelectComponent } from './form-inputs/nebular-select/nebular-select.component';
-import { CalendarKitFullCalendarShowcaseComponent } from './calendar-kit/calendar-kit.component';
-import { CalendarKitMonthCellComponent } from './calendar-kit/month-cell/month-cell.component';
 import { ECommerceModule } from '../e-commerce/e-commerce.module';
 import 'heatmap.js';
 import { PivotComponent } from './pivot/pivot.component';
@@ -44,15 +34,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 const COMPONENTS = [
   ExtraComponentsComponent,
   DashboardComponent,
-  ProgressBarComponent,
-  InteractiveProgressBarComponent,
-  CalendarComponent,
-  DayCellComponent,
   ChatComponent,
-  NebularFormInputsComponent,
-  NebularSelectComponent,
-  CalendarKitFullCalendarShowcaseComponent,
-  CalendarKitMonthCellComponent,
   PivotComponent,
 ];
 

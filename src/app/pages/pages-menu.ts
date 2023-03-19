@@ -13,7 +13,7 @@ export const MENU_ITEMS: NbMenuItem[] = [
   },
   {
     title: 'VR',
-    link: '/pages/extra-components/alert',
+    link: '/pages/extra-components/dashboard',
     icon: 'cube'
   }
 ];
