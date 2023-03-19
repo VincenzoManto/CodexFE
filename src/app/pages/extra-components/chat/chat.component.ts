@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 
 import { ChatService } from './chat.service';
 import * as h337 from 'heatmap.js';
@@ -12,20 +12,30 @@ import { environment } from '../../../../environments/environment';
 
 
 @Component({
-  selector: 'ngx-chat',
+  selector: 'app-chat',
   templateUrl: 'chat.component.html',
   styleUrls: ['chat.component.scss'],
   providers: [ ChatService ],
 })
 export class ChatComponent implements OnInit, OnDestroy {
 
-  messages: any[];
+  @Input() embeded = false;
+  @Input() reloadHistory = true;
+  @Input() db: number;
+  @Input() set lastPrompt(value) {
+    if (value && this.injectedPrompt !== value) {
+      this.sendMessage({message: value});
+      this.injectedPrompt = value;
+    }
+  }
+  @Input() selected = false;
+  injectedPrompt: string;
+  messages = [];
   pruningData: any;
   option: any;
   heatmap: any;
   lastMessage: string;
   dbs: Array<Db> = [];
-  db: number;
   max: number;
   drawing = false;
   tableDataPoints = {};
@@ -49,23 +59,13 @@ export class ChatComponent implements OnInit, OnDestroy {
     private http: HttpClient,
     private sanitizer: DomSanitizer,
     private toast: NbToastrService) {
-    const messages = this.chatService.loadMessages();
-    messages.forEach(e => {
-      if (e.customMessageData?.chart?.changingThisBreaksApplicationSecurity) {
-        e.customMessageData.chart = e.customMessageData?.chart?.changingThisBreaksApplicationSecurity;
-      }
-      if (e.customMessageData?.source?.data) {
-        const source = new LocalDataSource();
-        source.load(e.customMessageData?.source?.data);
-        e.customMessageData.source = source;
-      }
-    });
-    this.messages = messages;
     this.session = (Date.now()).toString();
   }
 
   ngOnDestroy() {
-    this.chatService.saveMessages(this.messages);
+    if (this.reloadHistory) {
+      this.chatService.saveMessages(this.messages);
+    }
   }
 
   navigate(event) {
@@ -304,15 +304,26 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.http.get(`${environment.codexAPI}/dbs`).subscribe((e: Array<Db>) => {
-      this.dbs = e;
-      const self = this;
-      setTimeout(() => {
-        if (e?.length) {
-          self.db = e[0]?.id;
+    if (this.reloadHistory) {
+      const messages = this.chatService.loadMessages();
+      messages.forEach(e => {
+        if (e.customMessageData?.chart?.changingThisBreaksApplicationSecurity) {
+          e.customMessageData.chart = e.customMessageData?.chart?.changingThisBreaksApplicationSecurity;
         }
-      }, 500);
-    });
+        if (e.customMessageData?.source?.data) {
+          const source = new LocalDataSource();
+          source.load(e.customMessageData?.source?.data);
+          e.customMessageData.source = source;
+        }
+      });
+      this.messages = messages;
+      this.http.get(`${environment.codexAPI}/dbs`).subscribe((e: Array<Db>) => {
+        this.dbs = e;
+      });
+    } else {
+      this.messages = [];
+    }
+
   }
 
   resend() {

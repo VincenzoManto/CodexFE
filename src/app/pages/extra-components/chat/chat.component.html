@@ -1,4 +1,4 @@
-<div class="row">
+<div class="row" *ngIf="!embeded">
   <div class="col-12 p-0">
     <nb-card>
       <nb-card-body>
@@ -19,8 +19,8 @@
     </nb-card>
   </div>
 </div>
-<div class="chat-container row">
-  <nb-chat title="Queric" size="large" status="primary" class="col-12 m-0 p-0" style="width: auto; height: 75vh">
+<div class="chat-container row" [class.embeded]="embeded" *ngIf="embeded || (!embeded && db)" [class.selected]="selected">
+  <nb-chat title="Queric" size="large" status="primary" class="col-12 m-0 p-0" >
     <div *nbCustomMessage="'waiting'">
       <div class="row m-0">
         <div class="col-auto p-0">
@@ -66,7 +66,7 @@
           </nb-card>
         </nb-card-back>
       </nb-flip-card>
-      <span class="col-1" *ngIf="tableData.id === lastTableId">
+      <span class="col-1" *ngIf="tableData.id === lastTableId && !embeded">
         <i class="fa fa-fire text-white  p-2 bg-primary"
         style="cursor: pointer; border-radius: 50%;"
         (click)="graphHeat()"

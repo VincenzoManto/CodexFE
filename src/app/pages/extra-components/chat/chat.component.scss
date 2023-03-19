@@ -99,9 +99,71 @@ nb-card.chart, .chart nb-card-body {
   height: auto;
 }
 
+::ng-deep .embeded {
+  iframe {
+    width: 550px;
+  }
+  nb-card.chart, .chart nb-card-body {
+    width: 100% !important;
+    text-align: center;
+    height: auto;
+  }
+  nb-chat-message,
+  nb-chat-avatar,
+  .sender  {
+    display: none !important;
+  }
+
+  .message {
+    margin: 0 !important;
+  }
+
+  nb-chat-message-text {
+    align-items: center !important;
+  }
+
+  .scrollable {
+    height: fit-content;
+    flex: unset !important;
+  }
+
+  nb-chat-message.not-reply:last-of-type,
+  nb-chat-message.reply + nb-chat-message.not-reply[ng-reflect-type="chart"] {
+    display: block !important;
+  }
+
+  nb-chat-message.not-reply nb-chat-message-text .text {
+    border-top-left-radius: 0.5rem !important;
+  }
+
+  .form {
+    display: none;
+  }
+
+  nb-chat {
+    width: auto;
+    max-height: unset;
+    height: auto;
+    box-shadow: none !important;
+  }
+}
+
+::ng-deep .embeded.selected {
+  .form {
+    display: block;
+  }
+}
+
+
+
+nb-chat {
+  width: auto;
+  height: 75vh;
+}
+
 iframe {
   border: none;
-  width: 450px;
+  width: 510px;
   height: 400px;
 }
 
