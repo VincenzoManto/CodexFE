@@ -43,29 +43,35 @@
         </span>
       </div>
     </div>
-    <div *nbCustomMessage="'table'; noStyles: true; let tableData; let isReply=isReply" class="row align-items-center m-0 mt-2" [class.selectedJump]="tableData.jumps.includes(selectedJump)">
-      <nb-flip-card class="col-11">
-        <nb-card-front>
-          <nb-card>
-            <nb-card-body class="p-0">
-              <ng2-smart-table
-                [settings]="tableData.settings"
-                [source]="tableData.source"
-                (userRowSelect)="navigate($event)"
-                style="max-width: 90%; overflow-x: auto">
-              </ng2-smart-table>
-            </nb-card-body>
-          </nb-card>
-        </nb-card-front>
-        <nb-card-back>
-          <nb-card style="height: 100%">
-            <nb-card-body>
-              <h3>What behind?</h3>
-              <pre>{{tableData.summarization}}</pre>
-            </nb-card-body>
-          </nb-card>
-        </nb-card-back>
-      </nb-flip-card>
+    <div *nbCustomMessage="'schema'">
+      <div style="width: 50vw">
+      <app-designer
+        [embedded]="true"
+        [db]="db"
+        [completeDb]="true"></app-designer>
+      </div>
+    </div>
+    <div *nbCustomMessage="'warning'; let tableData">
+      <div class="row" *ngIf="tableData.id === lastTableId ">
+        <div class="col-auto">
+          <button class="btn btn-sm" (click)="messageConfirm(true)">Yes</button>
+        </div>
+        <div class="col-auto">
+          <button class="btn btn-sm" (click)="messageConfirm(false)">No</button>
+        </div>
+      </div>
+    </div>
+    <div *nbCustomMessage="'table'; noStyles: true; let tableData; let isReply=isReply" class="row align-items-center m-0 mt-2" [class.selectedJump]="tableData?.jumps?.includes(selectedJump)">
+      <nb-card>
+        <nb-card-body class="p-0">
+          <ng2-smart-table
+            [settings]="tableData.settings"
+            [source]="tableData.source"
+            (userRowSelect)="navigate($event)"
+            style="max-width: 90%; overflow-x: auto">
+          </ng2-smart-table>
+        </nb-card-body>
+      </nb-card>
       <span class="col-1" *ngIf="tableData.id === lastTableId && !embeded">
         <i class="fa fa-fire text-white  p-2 bg-primary"
         style="cursor: pointer; border-radius: 50%;"
@@ -131,15 +137,5 @@
         [animation]="true"
       ></angular-d3-cloud>
     </div>
-    <!--div class="row justify-content-between">
-      <button nbButton hero class="col-12 col-md-6 col-lg-2"  [class.text-primary]="drawing"  (click)="drawing = !drawing">
-        <i class="fa fa-pen" ></i>
-        Alter
-      </button>
-      <button nbButton hero class="col-12 col-md-6 col-lg-2" [status]="'info'" (click)="resend()">
-        <i class="fa fa-send"></i>
-        Resend
-      </button>
-    </div-->
   </div>
 </ng-template>

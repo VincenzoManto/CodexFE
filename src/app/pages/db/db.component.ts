@@ -12,6 +12,7 @@ import TableData from '../../viewer/types/table-data';
 export class DBComponent implements AfterViewInit {
   title = 'firsttry';
   dbViewer?: DbViewer;
+  @Input() embedded = false;
   @ViewChild('dbViewer') viewer?: any;
   @Input() set schema(value) {
     this.dbViewer = null;

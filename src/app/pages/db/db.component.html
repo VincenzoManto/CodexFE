@@ -1,7 +1,6 @@
 
-<nb-card size="giant" class="p-0">
-
-  <nb-card-header>
+<nb-card size="giant" class="p-0" [class.border-0]="embedded">
+  <nb-card-header *ngIf="!embedded">
     Database schema
   </nb-card-header>
   <nb-card-body class="p-0">

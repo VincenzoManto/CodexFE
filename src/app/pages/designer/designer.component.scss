@@ -18,3 +18,7 @@
 table tbody tr:nth-child(2n) {
   background-color: var(--light);
 }
+
+::ng-deep *::part(svgs){
+  background: white !important;
+}

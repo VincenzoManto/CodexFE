@@ -37,5 +37,8 @@ import { DBComponent } from '../db/db.component';
     DesignerComponent,
     DBComponent
   ],
+  exports: [
+    DesignerComponent
+  ]
 })
 export class DesignerModule { }

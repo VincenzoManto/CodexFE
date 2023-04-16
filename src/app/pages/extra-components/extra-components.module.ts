@@ -30,6 +30,7 @@ import { PivotComponent } from './pivot/pivot.component';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { FormsModule } from '@angular/forms';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { DesignerModule } from '../designer/designer.module';
 
 const COMPONENTS = [
   ExtraComponentsComponent,
@@ -55,6 +56,7 @@ const MODULES = [
   NbSpinnerModule,
   NbTabsetModule,
   ECommerceModule,
+  DesignerModule,
   Ng2SmartTableModule,
   ThemeModule,
   AngularD3CloudModule,

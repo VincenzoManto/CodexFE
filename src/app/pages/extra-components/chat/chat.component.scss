@@ -69,9 +69,20 @@
   overflow-x: auto;
 }
 
-::ng-deep .nb-custom-message-not-reply {
+::ng-deep nb-chat-message:not([ng-reflect-type='schema']) .nb-custom-message-not-reply {
   background: #db2c66 !important;
   color: white;
+}
+
+::ng-deep nb-chat-message[ng-reflect-type='schema'] .nb-custom-message-not-reply {
+  background: white !important;
+  padding: 1rem !important;
+}
+
+::ng-deep nb-chat-message[ng-reflect-type='warning'] .nb-custom-message-not-reply {
+  background: var(--warning) !important;
+  color: white;
+  padding: 1rem !important;
 }
 
 ::ng-deep .front-container, ::ng-deep .back-container {
@@ -108,7 +119,7 @@ nb-card.chart, .chart nb-card-body {
     text-align: center;
     height: auto;
   }
-  nb-chat-message,
+  /*nb-chat-message,*/
   nb-chat-avatar,
   .sender  {
     display: none !important;
@@ -154,7 +165,9 @@ nb-card.chart, .chart nb-card-body {
   }
 }
 
-
+::ng-deep .nb-theme-default ng2-smart-table table tr td {
+  padding: 0.5rem !important;
+}
 
 nb-chat {
   width: auto;
@@ -163,7 +176,7 @@ nb-chat {
 
 iframe {
   border: none;
-  width: 510px;
+  width: 550px;
   height: 400px;
 }
 

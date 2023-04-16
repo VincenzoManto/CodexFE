@@ -336,7 +336,7 @@ thead tr th {
 </style>
 <div id="viewer-container">
   <div class="svg-container">
-    <svg id="viewer" version="2" baseProfile="full" xmlns="http://www.w3.org/2000/svg">
+    <svg id="viewer" version="2" part="svgs" baseProfile="full" xmlns="http://www.w3.org/2000/svg">
     </svg>
   </div>
   <div id="minimap-container" style="display:none">

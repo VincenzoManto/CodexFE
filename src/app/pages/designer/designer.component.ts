@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import { NbThemeService, NbToastrService } from '@nebular/theme';
 import { takeWhile } from 'rxjs/operators' ;
 import { environment } from '../../../environments/environment';
@@ -20,7 +20,12 @@ interface CardSettings {
 export class DesignerComponent implements OnDestroy, OnInit {
 
   private alive = true;
-  db: number;
+  @Input() db: number;
+  @Input() set embedded(value) {
+    this.pEmbedded = value;
+    this.changeView();
+  }
+  pEmbedded = false;
   dbs: Array<Db> = [];
 
   showAll = false;
@@ -29,7 +34,8 @@ export class DesignerComponent implements OnDestroy, OnInit {
   saved = false;
   letters: Array<string> = [];
   letter = 'A';
-  completeDB = false;
+  @Input() completeDB = false;
+  narration: string;
 
   constructor(private themeService: NbThemeService,
               private http: HttpClient,
@@ -65,6 +71,17 @@ export class DesignerComponent implements OnDestroy, OnInit {
     const schema: any =
     await this.http.get(`${environment.codexAPI}/schema/${this.db}/${letter}`).toPromise();
 
+    if (this.pEmbedded) {
+      const connectors = ['referring to', 'talking about', 'containing'];
+      schema.tables = schema.tables.filter(e => e.description);
+
+      this.narration = `You can request information about ${schema.tables.map(e =>
+        e.name + ' ' + connectors[Math.round(Math.random() * (connectors.length - 1))] + ' ' + e.description.split(',')[0]).join(' or<br>')}`;
+      schema.tables.forEach(e => {
+        e.name = e.description?.split(',')[0];
+        e.name = e.name[0].toUpperCase() + e.name.substring(1, e.name.length);
+      });
+    }
     schema.tables.forEach((e: any) => {
       const pks = e.columns?.filter((d: { pk: any; }) => d.pk);
       const fks = e.columns?.filter((d: any) => d.fk);

@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, TemplateRef, ViewChild } from '@angular/core';
 
 import { ChatService } from './chat.service';
 import * as h337 from 'heatmap.js';
@@ -7,7 +7,7 @@ import { Db } from '../../../models/db.model';
 import _ from 'lodash';
 import { LocalDataSource } from 'ng2-smart-table';
 import { DomSanitizer } from '@angular/platform-browser';
-import { NbToastrService } from '@nebular/theme';
+import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { environment } from '../../../../environments/environment';
 
 
@@ -24,11 +24,13 @@ export class ChatComponent implements OnInit, OnDestroy {
   @Input() db: number;
   @Input() set lastPrompt(value) {
     if (value && this.injectedPrompt !== value) {
-      this.sendMessage({message: value});
+      this.sendQuery(value);
       this.injectedPrompt = value;
     }
   }
   @Input() selected = false;
+  @Output() newQuery = new EventEmitter<string>();
+  @ViewChild('schema') template: TemplateRef<any>;
   injectedPrompt: string;
   messages = [];
   pruningData: any;
@@ -58,13 +60,14 @@ export class ChatComponent implements OnInit, OnDestroy {
     protected chatService: ChatService,
     private http: HttpClient,
     private sanitizer: DomSanitizer,
+    private dialo: NbDialogService,
     private toast: NbToastrService) {
     this.session = (Date.now()).toString();
   }
 
   ngOnDestroy() {
     if (this.reloadHistory) {
-      this.chatService.saveMessages(this.messages);
+      this.chatService.saveMessages(this.messages.filter(e => e.type !== 'schema'));
     }
   }
 
@@ -109,7 +112,32 @@ export class ChatComponent implements OnInit, OnDestroy {
     return randomSentence[Math.floor(Math.random() * randomSentence.length)];
   }
 
-  sendMessage(event: any) {
+  sendQuery(query) {
+    this.http.post(`${environment.codexAPI}/execute-query/${this.db}/${this.session} `, {
+      query
+    }).subscribe((e: any) => {
+      this.tablelizeResults(e);
+    });
+  }
+
+  messageConfirm(result) {
+    if (result) {
+      this.sendMessage(this.lastMessage, true);
+    } else {
+      ++this.lastTableId;
+      this.messages.push({
+        date: new Date(),
+        reply: false,
+        type: 'text',
+        text: 'Good!',
+        user: {
+          name: 'Bot',
+        },
+      });
+    }
+  }
+
+  async sendMessage(event: any, force = false) {
     const files = !event.files ? [] : event.files.map((file) => {
       return {
         url: file.src,
@@ -118,109 +146,205 @@ export class ChatComponent implements OnInit, OnDestroy {
       };
     });
 
-    this.messages.push({
-      text: event.message,
-      date: new Date(),
-      reply: true,
-      type: files.length ? 'file' : 'text',
-      files: files,
-      user: {
-        name: 'You',
-      },
-    });
+    if (!force) {
+      this.lastMessage = event.message;
+    }
+    let insert = false;
 
-    this.lastMessage = event.message;
-    if (event.message === 'd' ) {
-      this.http.get(`${environment.codexAPI}/data/${this.session}`).subscribe((d: any) => {
-        this.tablelizeResults(d);
-      });
-    } else {
-      const lastIdx = this.messages.length;
-      this.http.post(`${environment.codexAPI}/execute/${this.db}/${this.session} `, {
-        message: event.message,
-        step: this.steps.findIndex(e => e === this.stepSelected),
-      }).subscribe((e: any) => {
-        if (e.chart) {
-          const table = {
-            text: 'Here something',
-            reply: false,
-            date: new Date(),
-            customMessageData: {
-              chart: this.sanitizer.bypassSecurityTrustHtml(e.chart),
-            },
-            type: 'chart',
-            user: {
-              name: 'Bot',
-            },
-          };
-          this.messages.push(table);
-        }
-        if (e.pruning) {
-          this.pruningData = [];
-          const pruning = e.pruning;
-          let i = 1;
-          const w = 50;
-          this.max = 0;
-          // tslint:disable-next-line:forin
-          for (const v in pruning) {
-            const value = +pruning[v] * w / 1.5;
-            this.max = value > this.max ? value : this.max;
-            this.pruningData.push({
-              x: Math.round(i / 250) * w + w * 2,
-              y: (i % 250) + w * 2,
-              value: value,
-              radius: +pruning[v] * w * 1.5,
-              name: v,
-            });
-            i += 100;
-          }
-          this.pruningData.forEach(d => {
-            d.value /= this.max;
-          });
-          this.pruningDataWords = this.pruningData.map(word => ({
-            text: word.name,
-            value: Math.round(Math.pow(word.value * 10, 1.5))
-          }));
-        }
-        if (e.results?.length) {
-          this.tablelizeResults(e);
-        } else if (!e.chart) {
+    try {
+      const intent: any = await this.http.post(`${environment.codexAPI}/dashboard/${this.db} `, {
+        message: this.lastMessage,
+        chat: true
+      }).toPromise();
+      if (intent.intent === 'add') {
+        if (force) {
+          insert = true;
+        } else {
+
           this.messages.push({
-            text: 'Nothing here. I apologize, but I found nothing...',
+            text: event.message,
+            date: new Date(),
+            reply: true,
+            type: files.length ? 'file' : 'text',
+            files: files,
+            user: {
+              name: 'You',
+            },
+          });
+          this.messages.push({
             date: new Date(),
             reply: false,
-            type:  'text',
+            type: 'warning',
+            text: 'Hey! It seems you want to add something. Remember that it could be dangerous. Are you sure?',
+            customMessageData: {
+              id: ++this.lastTableId
+            },
             user: {
               name: 'Bot',
             },
           });
+          return;
         }
-        this.messages.splice(lastIdx, 1);
-      }, (error) => {
-        this.toast.danger(error);
-        this.messages[lastIdx].type = 'error';
-      });
+      }
+      if (intent.intent === 'schema') {
+        this.messages.push({
+          date: new Date(),
+          reply: false,
+          type: 'schema',
+          user: {
+            name: 'Bot',
+          },
+        });
+        return;
+      }
+    } catch(e) {}
+
+    if (event.message) {
       this.messages.push({
-        text: '',
+        text: event.message,
         date: new Date(),
-        reply: false,
-        type:  'waiting',
+        reply: true,
+        type: files.length ? 'file' : 'text',
+        files: files,
         user: {
-          name: 'Bot',
+          name: 'You',
         },
       });
     }
+
+
+
+    const lastIdx = this.messages.length;
+    this.http.post(`${environment.codexAPI}/execute/${this.db}/${this.session} `, {
+      message: this.lastMessage,
+      insert,
+      step: this.steps.findIndex(e => e === this.stepSelected),
+    }).subscribe((e: any) => {
+      if (e.insert) {
+        /*const source = new LocalDataSource();
+        const data = [{}];
+        const columns = {};
+        for (const d of e.columns) {
+          const title = d.replace('_', ' ').toUpperCase();
+          columns[d] = {
+            title: title,
+            type: 'string',
+          };
+          data[0][d] = '';
+        }
+        source.load(data);
+        const table = {
+          text: 'I might have not enough knowledge about the subject to insert a record, but let\'s try',
+          reply: false,
+          date: new Date(),
+          customMessageData: {
+            settings: {
+              columns: e.columns,
+              actions: true,
+            },
+            source,
+            id: ++this.lastTableId
+          },
+          type: 'table',
+          user: {
+            name: 'Bot',
+          },
+        };
+        this.messages.push(table);
+        this.messages.splice(lastIdx, 1);
+        return;*/
+        this.messages.push({
+          text: e.query,
+          reply: false,
+          date: new Date(),
+          type: 'text',
+          user: {
+            name: 'Bot',
+          },
+        });
+      }
+      if (e.chart) {
+        const table = {
+          text: 'Here something',
+          reply: false,
+          date: new Date(),
+          customMessageData: {
+            chart: this.sanitizer.bypassSecurityTrustHtml(e.chart),
+          },
+          type: 'chart',
+          user: {
+            name: 'Bot',
+          },
+        };
+        this.messages.push(table);
+      }
+      if (e.pruning) {
+        this.pruningData = [];
+        const pruning = e.pruning;
+        let i = 1;
+        const w = 50;
+        this.max = 0;
+        // tslint:disable-next-line:forin
+        for (const v in pruning) {
+          const value = +pruning[v] * w / 1.5;
+          this.max = value > this.max ? value : this.max;
+          this.pruningData.push({
+            x: Math.round(i / 250) * w + w * 2,
+            y: (i % 250) + w * 2,
+            value: value,
+            radius: +pruning[v] * w * 1.5,
+            name: v,
+          });
+          i += 100;
+        }
+        this.pruningData.forEach(d => {
+          d.value /= this.max;
+        });
+        this.pruningDataWords = this.pruningData.map(word => ({
+          text: word.name,
+          value: Math.round(Math.pow(word.value * 10, 1.5))
+        }));
+      }
+      if (e.results?.length) {
+        this.tablelizeResults(e);
+      } else if (!e.chart) {
+        this.messages.push({
+          text: 'Nothing here. I apologize, but I found nothing...',
+          date: new Date(),
+          reply: false,
+          type:  'text',
+          user: {
+            name: 'Bot',
+          },
+        });
+      }
+      this.messages.splice(lastIdx, 1);
+    }, (error) => {
+      this.toast.danger(error);
+      this.messages[lastIdx].type = 'error';
+    });
+    this.messages.push({
+      text: '',
+      date: new Date(),
+      reply: false,
+      type:  'waiting',
+      user: {
+        name: 'Bot',
+      },
+    });
   }
 
   tablelizeResults(res, preMessage = 'Here something') {
+    this.newQuery.emit(res.query);
     if (res.pretext) {
       preMessage = res.pretext;
     }
     const d = res.results;
     const columns = {};
     for (const e of Object.keys(d[0])) {
+      const title = !e.toUpperCase().includes('COUNT(') ? e.replace('_', ' ').toUpperCase() : 'Nr records';
       columns[e] = {
-        title: e,
+        title: title,
         type: 'string',
       };
     }
@@ -233,7 +357,7 @@ export class ChatComponent implements OnInit, OnDestroy {
       e.sentence = this.randomNavigation();
     });
     const table = {
-      text: preMessage,
+      text: res.pretext || summarization?.replaceAll('_',' '),
       reply: false,
       date: new Date(),
       customMessageData: {
@@ -309,6 +433,9 @@ export class ChatComponent implements OnInit, OnDestroy {
       messages.forEach(e => {
         if (e.customMessageData?.chart?.changingThisBreaksApplicationSecurity) {
           e.customMessageData.chart = e.customMessageData?.chart?.changingThisBreaksApplicationSecurity;
+        }
+        if (e.customMessageData?.chart) {
+          e.customMessageData.chart = this.sanitizer.bypassSecurityTrustHtml(e.customMessageData.chart);
         }
         if (e.customMessageData?.source?.data) {
           const source = new LocalDataSource();

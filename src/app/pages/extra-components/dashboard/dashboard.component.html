@@ -20,7 +20,12 @@
     placeholder="Edit this dashboard"
     [(ngModel)]="prompt"
     (keyup.enter)="submit()"
-    class="input-full-width size-medium status-basic shape-rectangle nb-transition mb-1">
+    class="input-full-width size-medium status-basic shape-rectangle nb-transition col mb-1">
+    <div class="col-auto p-2">
+      <button class="p-1 btn bg-white" (click)="pptx()">
+        <img src="assets/images/icons8-fantasy.gif" style="width: 1.5rem">
+      </button>
+    </div>
 </div>
 <div class="row" *ngIf="error">
   <nb-alert class="col-12 text-center" [status]="'danger'">{{error}}</nb-alert>
@@ -29,9 +34,36 @@
 <div class="row">
   <div class="col-{{col.class}}" *ngFor="let col of structure" (click)="select(col)">
     <nb-card [class.selected]="col.selected">
+      <nb-card-header>
+        <div class="row align-items-center">
+          <input
+            [(ngModel)]="col.title"
+            placeholder="Give me a name"
+            class="input-full-width border-0 size-medium status-basic shape-rectangle nb-transition mb-1 col-9">
+        </div>
+      </nb-card-header>
       <nb-card-body>
-        <app-chat [embeded]="true" [reloadHistory]="false" [db]="db" [lastPrompt]="col.prompt" [selected]="col.selected"></app-chat>
+        <app-chat
+          [embeded]="true"
+          [reloadHistory]="false"
+          [db]="db"
+          [lastPrompt]="col.prompt"
+          (newQuery)="col.query = $event"
+          [selected]="col.selected">
+        </app-chat>
       </nb-card-body>
     </nb-card>
   </div>
 </div>
+
+<ng-template #schema>
+  <nb-card style="width: 80vw; height: 80vh;">
+    <nb-card-header>Schema?</nb-card-header>
+    <nb-card-body>
+      <app-designer
+        [embedded]="true"
+        [db]="db"
+        [completeDb]="true"></app-designer>
+    </nb-card-body>
+  </nb-card>
+</ng-template>
