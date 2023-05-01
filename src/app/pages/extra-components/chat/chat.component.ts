@@ -9,6 +9,7 @@ import { LocalDataSource } from 'ng2-smart-table';
 import { DomSanitizer } from '@angular/platform-browser';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { environment } from '../../../../environments/environment';
+import { Angular5Csv } from 'angular5-csv/dist/Angular5-csv';
 
 
 @Component({
@@ -156,7 +157,7 @@ export class ChatComponent implements OnInit, OnDestroy {
         message: this.lastMessage,
         chat: true
       }).toPromise();
-      if (intent.intent === 'add') {
+      if (intent.intent === 'add' && false) {
         if (force) {
           insert = true;
         } else {
@@ -221,38 +222,6 @@ export class ChatComponent implements OnInit, OnDestroy {
       step: this.steps.findIndex(e => e === this.stepSelected),
     }).subscribe((e: any) => {
       if (e.insert) {
-        /*const source = new LocalDataSource();
-        const data = [{}];
-        const columns = {};
-        for (const d of e.columns) {
-          const title = d.replace('_', ' ').toUpperCase();
-          columns[d] = {
-            title: title,
-            type: 'string',
-          };
-          data[0][d] = '';
-        }
-        source.load(data);
-        const table = {
-          text: 'I might have not enough knowledge about the subject to insert a record, but let\'s try',
-          reply: false,
-          date: new Date(),
-          customMessageData: {
-            settings: {
-              columns: e.columns,
-              actions: true,
-            },
-            source,
-            id: ++this.lastTableId
-          },
-          type: 'table',
-          user: {
-            name: 'Bot',
-          },
-        };
-        this.messages.push(table);
-        this.messages.splice(lastIdx, 1);
-        return;*/
         this.messages.push({
           text: e.query,
           reply: false,
@@ -309,7 +278,7 @@ export class ChatComponent implements OnInit, OnDestroy {
         this.tablelizeResults(e);
       } else if (!e.chart) {
         this.messages.push({
-          text: 'Nothing here. I apologize, but I found nothing...',
+          text: e.pretext || 'Nothing here. I apologize, but I found nothing...',
           date: new Date(),
           reply: false,
           type:  'text',
@@ -334,19 +303,75 @@ export class ChatComponent implements OnInit, OnDestroy {
     });
   }
 
+  trashIt() {
+    this.session = (Date.now()).toString();
+    this.messages = [];
+  }
+
+  downloadCSV(table) {
+    const columns = [];
+    for (const e in table.settings.columns) {
+      columns.push(table.settings.columns[e].title);
+    }
+    const options = {
+      fieldSeparator: ',',
+      quoteStrings: '"',
+      decimalseparator: '.',
+      showLabels: true,
+      showTitle: true,
+      useBom: true,
+      headers: columns,
+    };
+    table.source.getAll().then(data => {
+      new Angular5Csv(data, 'report', options);
+    })
+  }
+
+  private isImage(data){
+    let knownTypes = {
+      '/': 'data:image/jpg;base64,',
+      'i': 'data:image/png;base64,',
+      /*ETC*/
+      }
+
+      let image = new Image()
+
+      if(!knownTypes[data[0]]){
+        console.log("encoded image didn't match known types");
+        return false;
+      }else{
+        image.src = knownTypes[0]+data
+        image.onload = function(){
+          //This should load the image so that you can actually check
+          //height and width.
+          if(image.height === 0 || image.width === 0){
+            console.log('encoded image missing width or height');
+            return false;
+          }
+      }
+      return true;
+    }
+  }
+
   tablelizeResults(res, preMessage = 'Here something') {
     this.newQuery.emit(res.query);
-    if (res.pretext) {
-      preMessage = res.pretext;
-    }
+
     const d = res.results;
     const columns = {};
     for (const e of Object.keys(d[0])) {
       const title = !e.toUpperCase().includes('COUNT(') ? e.replace('_', ' ').toUpperCase() : 'Nr records';
-      columns[e] = {
-        title: title,
-        type: 'string',
-      };
+      if (this.isImage(d[0][e])) {
+        columns[e] = {
+          title: title,
+          valuePrepareFunction: (value) => { return `<img style="width: 400px;" src="data:image/png;base64,${value}" />` },
+          type: 'html',
+        };
+      } else {
+        columns[e] = {
+          title: title,
+          type: 'string',
+        };
+      }
     }
     this.selectedJump = null;
     const source = new LocalDataSource();

@@ -16,7 +16,10 @@ export class DashboardComponent {
   structure = [];
   prompt: string;
   error: string;
+  warning: string;
+  loading = false;
   dbs = [];
+  yes = () => {};
   db: number;
   @ViewChild('schema') template: TemplateRef<any>;;
 
@@ -41,6 +44,10 @@ export class DashboardComponent {
     }
   }
 
+  no() {
+    this.warning = '';
+  }
+
   pptx() {
     const cards = this.structure.filter(e => e.title?.trim() && e.query?.trim());
     if (cards?.length) {
@@ -56,16 +63,33 @@ export class DashboardComponent {
         //this.downLoadFile(e, 'application/vnd.openxmlformats-officedocument.presentationml.presentation');
       });
     } else {
+      this.structure.forEach(e => e.face = true);
+      setTimeout(() => this.structure.forEach(e => e.face = false), 1300);
       this.toast.info('You probably need to give a title to cards', 'Hmm...');
     }
+  }
+
+  overwriteDashboard(queries) {
+    let cx;
+    this.structure = queries.map((e, i) => {
+      cx = (i % 2 === 0) ? Math.round(3 + Math.random() * 5) : (12 - cx);
+      const query = e.trim().replace(/^\_+/g, '').replaceAll(/\\\w|\n/gi,'');
+      return {
+        class: cx,
+        prompt: query,
+        query
+      }
+    });
   }
 
   submit() {
     const prompt = _.clone(this.prompt);
     this.prompt = '';
+    this.loading = true;
     this.http.post(`${environment.codexAPI}/dashboard/${this.db} `, {
       message: prompt
     }).subscribe((e: any) => {
+      this.loading = false;
       if (e.intent === 'add') {
         switch (e.size) {
           case 'large':
@@ -86,7 +110,7 @@ export class DashboardComponent {
             break;
           default:
             this.structure.push({
-              class: 3
+              class: 4
             });
             break;
         }
@@ -125,22 +149,23 @@ export class DashboardComponent {
         }
       } else if (e.intent === 'create') {
         const queries = e.queries.filter(e => e && e.toLowerCase().includes('select'));
-        let cx;
-        this.structure = queries.map((e, i) => {
-          cx = (i % 2 === 0) ? Math.round(3 + Math.random() * 5) : (12 - cx);
-          const query = e.trim().replace(/^\_+/g, '').replaceAll(/\\\w|\n/gi,'');
-          return {
-            class: cx,
-            prompt: query,
-            query
+
+        if (this.structure?.length) {
+          this.warning = "Do you want to overwrite the previous dashboard?";
+          this.yes = () => {
+            this.overwriteDashboard(queries);
+            this.warning = null;
           }
-        });
+        } else {
+          this.overwriteDashboard(queries);
+        }
       } else if (e.intent === 'presentation') {
         this.pptx();
       } else if (e.intent === 'schema') {
         this.dialo.open(this.template);
       }
     }, (err) => {
+      this.loading = false;
       this.toast.warning('The service is currently loading, but you can retry', 'Hey, wait please');
     });
   }

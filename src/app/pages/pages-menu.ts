@@ -12,7 +12,7 @@ export const MENU_ITEMS: NbMenuItem[] = [
     icon: 'layout-outline'
   },
   {
-    title: 'VR',
+    title: 'Dashboard',
     link: '/pages/extra-components/dashboard',
     icon: 'cube'
   }

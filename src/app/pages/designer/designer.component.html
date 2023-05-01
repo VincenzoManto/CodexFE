@@ -104,4 +104,15 @@
       </nb-card-body>
     </nb-card>
   </div>
+  <div class="col-12 row" *ngIf="!pEmbedded && schema">
+    <input
+        type="text"
+        nbInput
+        fullWidth
+        shape="semi-round"
+        placeholder="General notes"
+        [(ngModel)]="schema.notes"
+        (ngModelChange)="schema.edited = true"
+        class="input-full-width size-medium status-basic shape-rectangle nb-transition mb-1 col-12">
+  </div>
 </div>

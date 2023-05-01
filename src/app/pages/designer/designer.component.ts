@@ -52,7 +52,7 @@ export class DesignerComponent implements OnDestroy, OnInit {
   changeView() {
     this.completeDB = !this.completeDB;
     if (this.completeDB) {
-      this.load('');
+      this.load('%25');
     }
   }
 
@@ -163,6 +163,8 @@ export class DesignerComponent implements OnDestroy, OnInit {
           this.schema.tables.find(d => d.name === e.name)?.columns.filter(d => d.description?.trim()) || [],
       })),
       fks: fks,
+      db: +this.db,
+      notes: this.schema.notes
     };
     await this.http.post(`${environment.codexAPI}/schema/${this.db}`, tables).subscribe(e => {
       this.toast.success('Saved');

@@ -1,4 +1,4 @@
-<div class="row">
+<div class="row" [nbSpinner]="loading">
   <div class="col-12 p-0">
     <nb-card>
       <nb-card-body>
@@ -11,7 +11,7 @@
     </nb-card>
   </div>
 </div>
-<div class="row" *ngIf="db">
+<div class="row" *ngIf="db" [nbSpinner]="loading">
   <input
     type="text"
     nbInput
@@ -30,16 +30,29 @@
 <div class="row" *ngIf="error">
   <nb-alert class="col-12 text-center" [status]="'danger'">{{error}}</nb-alert>
 </div>
+<div class="row" *ngIf="warning">
+  <nb-alert class="col-12" [status]="'info'">
+    <div class="row align-items-center">
+    <span class="col">{{warning}}</span><div class="col-auto">
+      <button class="btn btn-success mr-2" (click)="yes()">Yes</button>
+      <button class="btn btn-danger" (click)="no()">No</button>
+    </div>
+  </div>
+</nb-alert>
+</div>
 
-<div class="row">
+<div class="row" [nbSpinner]="loading">
   <div class="col-{{col.class}}" *ngFor="let col of structure" (click)="select(col)">
     <nb-card [class.selected]="col.selected">
       <nb-card-header>
         <div class="row align-items-center">
           <input
             [(ngModel)]="col.title"
-            placeholder="Give me a name"
-            class="input-full-width border-0 size-medium status-basic shape-rectangle nb-transition mb-1 col-9">
+            nbInput
+            fullWidth
+            [class.face]="col.face"
+            placeholder="Type a meaningful name"
+            class="input-full-width size-medium status-basic shape-rectangle nb-transition mb-1 col-12">
         </div>
       </nb-card-header>
       <nb-card-body>

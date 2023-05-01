@@ -125,6 +125,11 @@ nb-card.chart, .chart nb-card-body {
     display: none !important;
   }
 
+  nb-chat {
+    max-height: 36rem;
+    height: auto;
+  }
+
   .message {
     margin: 0 !important;
   }
@@ -148,7 +153,7 @@ nb-card.chart, .chart nb-card-body {
   }
 
   .form {
-    display: none;
+    display: block;
   }
 
   nb-chat {
@@ -159,11 +164,11 @@ nb-card.chart, .chart nb-card-body {
   }
 }
 
-::ng-deep .embeded.selected {
+/*::ng-deep .embeded.selected {
   .form {
     display: block;
   }
-}
+}*/
 
 ::ng-deep .nb-theme-default ng2-smart-table table tr td {
   padding: 0.5rem !important;
@@ -208,4 +213,10 @@ small {
 
 ::ng-deep nb-chat .header {
   display: none;
+}
+
+
+::ng-deep .no-messages {
+  opacity: .4;
+  font-weight: bold !important;
 }

@@ -6,13 +6,8 @@
           <nb-select class="col-12 col-md-6 col-lg-3" [(selected)]="db">
             <nb-option value="{{db.id}}" *ngFor="let db of dbs; let idx = index" [selected]="idx === 0">{{db.name}}</nb-option>
           </nb-select>
-          <div class="btn-group col-5" role="group">
-            <button type="button" class="btn" *ngFor="let x of steps"
-            [ngClass]="{
-              'btn-primary': x === stepSelected,
-              'btn-light': x !== stepSelected
-            }"
-            (click)="stepSelected = x">{{x}}</button>
+          <div class="col-auto">
+            <button class="btn btn-primary" (click)="trashIt()"><i class="fa fa-trash"></i></button>
           </div>
         </div>
       </nb-card-body>
@@ -20,7 +15,7 @@
   </div>
 </div>
 <div class="chat-container row" [class.embeded]="embeded" *ngIf="embeded || (!embeded && db)" [class.selected]="selected">
-  <nb-chat title="Queric" size="large" status="primary" class="col-12 m-0 p-0" >
+  <nb-chat title="Queric" size="large" status="primary" class="col-12 m-0 p-0" noMessagesPlaceholder="No extraction yet">
     <div *nbCustomMessage="'waiting'">
       <div class="row m-0">
         <div class="col-auto p-0">
@@ -63,6 +58,13 @@
     </div>
     <div *nbCustomMessage="'table'; noStyles: true; let tableData; let isReply=isReply" class="row align-items-center m-0 mt-2" [class.selectedJump]="tableData?.jumps?.includes(selectedJump)">
       <nb-card>
+        <ng-card-header>
+          <div class="row">
+            <div class="col-auto">
+              <button class="btn" (click)="downloadCSV(tableData)"><i class="fa fa-download text-gray"></i></button>
+            </div>
+          </div>
+        </ng-card-header>
         <nb-card-body class="p-0">
           <ng2-smart-table
             [settings]="tableData.settings"
@@ -111,7 +113,7 @@
                     [longitude]="msg.longitude"
                     [avatar]="msg.user.avatar">
     </nb-chat-message>
-    <nb-chat-form (send)="sendMessage($event)" [dropFiles]="false">
+    <nb-chat-form (send)="sendMessage($event)" [dropFiles]="false" [messagePlaceholder]="'Type a command or request'">
     </nb-chat-form>
   </nb-chat>
 
